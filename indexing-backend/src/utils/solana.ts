@@ -1,9 +1,9 @@
-import prisma from '@repo/db';
+import { PrismaClient } from 'prisma-shared';
 import { Connection, PublicKey, ParsedTransactionWithMeta, SignaturesForAddressOptions, TransactionResponse,LAMPORTS_PER_SOL } from '@solana/web3.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
+const prisma = new PrismaClient();
 const connection = new Connection(process.env.SOLANA_MAINNET || 'https://api.mainnet-beta.solana.com');
 
 export async function getLatestTransactions(walletAddress: string): Promise<ParsedTransactionWithMeta[]> {
