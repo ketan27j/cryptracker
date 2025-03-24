@@ -2,9 +2,11 @@
 
 # dependencies
 /node_modules
+/backend/node_modules
+/prisma-client/node_modules
 /apps/*/node_modules
 /packages/*/node_modules
-/apps/backend/dist
+/backend/dist
 .turbo
 /.pnp
 .pnp.*
