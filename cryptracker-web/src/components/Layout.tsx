@@ -72,7 +72,7 @@ const Layout: React.FC = () => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center px-2 py-2">
                 <Database className="h-8 w-8 text-indigo-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">Solana Indexer</span>
+                <span className="ml-1 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-transparent">Solana Indexer</span>
               </Link>
               
               {/* Mobile Hamburger Menu */}
