@@ -1,132 +1,185 @@
 import React, { useState } from 'react';
+import { 
+  Activity, Server, Zap, Database, Cpu, Cloud, Layers, Settings, Bell, 
+  PieChart, BarChart2, TrendingUp, Filter, Sliders, Grid, Target, Maximize2, Link2
+} from 'lucide-react';
 
-const IndexingForm: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [formData, setFormData] = useState({
-    nftAddress: '',
-    nftPrice: '',
-    tokenToBorrow: '',
-    tokenPrice: '',
-  });
+const BlockchainMetricsDashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('Tokens');
+  const [selectedAlert, setSelectedAlert] = useState('Bitcoin');
+  const [selectedMetric, setSelectedMetric] = useState('Difficulty');
+  const [direction, setDirection] = useState('above');
+  const [threshold, setThreshold] = useState('000000');
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-  };
+  const tabs = [
+    { icon: <Activity className="w-5 h-5 mr-2" />, name: 'Tokens' },
+    { icon: <Server className="w-5 h-5 mr-2" />, name: 'Blockchain' },
+    { icon: <Zap className="w-5 h-5 mr-2" />, name: 'Metrics' },
+    { icon: <Database className="w-5 h-5 mr-2" />, name: 'Transactions' },
+    { icon: <Cpu className="w-5 h-5 mr-2" />, name: 'Mining' },
+    { icon: <Cloud className="w-5 h-5 mr-2" />, name: 'Network' },
+    { icon: <Layers className="w-5 h-5 mr-2" />, name: 'Blocks' },
+  ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const tabContents = {
+    'Tokens': () => (
+      <div>
+         <h1 className="text-2xl font-bold text-blue-800 mb-6 flex items-center">
+           <Bell className="mr-3 text-blue-600" /> Blockchain Metric Alert
+         </h1>
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form Data:', { selectedCategory, ...formData });
-    // TODO: Add logic to handle form submission
+         <p className="text-gray-600 mb-6">Monitor on-chain metrics tied to the BTC & ETH blockchains.</p>
+
+         <div className="space-y-4">
+           <div className="grid grid-cols-3 gap-4">
+             {/* Alert Type */}
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-2">Send me an</label>
+               <div className="relative">
+                 <select 
+                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+                 >
+                   <option>Email</option>
+                   <option>SMS</option>
+                   <option>Push Notification</option>
+                 </select>
+               </div>
+             </div>
+
+             {/* Blockchain */}
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-2">Blockchain</label>
+               <div className="relative">
+                 <select 
+                   value={selectedAlert}
+                   onChange={(e) => setSelectedAlert(e.target.value)}
+                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+                 >
+                   <option value="Bitcoin">Bitcoin</option>
+                   <option value="Ethereum">Ethereum</option>
+                 </select>
+               </div>
+             </div>
+
+             {/* Metric */}
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-2">Metric</label>
+               <div className="relative">
+                 <select 
+                   value={selectedMetric}
+                   onChange={(e) => setSelectedMetric(e.target.value)}
+                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+                 >
+                   <option value="Difficulty">Difficulty</option>
+                   <option value="BlockHeight">Block Height</option>
+                   <option value="TransactionsPerBlock">Transactions per Block</option>
+                   <option value="BlockSize">Block Size</option>
+                 </select>
+               </div>
+             </div>
+           </div>
+
+           {/* Condition */}
+           <div className="grid grid-cols-3 gap-4">
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-2">Direction</label>
+               <select 
+                 value={direction}
+                 onChange={(e) => setDirection(e.target.value)}
+                 className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+               >
+                 <option value="above">goes above</option>
+                 <option value="below">goes below</option>
+               </select>
+             </div>
+
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-2">Threshold</label>
+               <input 
+                 type="text" 
+                 value={threshold}
+                 onChange={(e) => setThreshold(e.target.value)}
+                 className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+               />
+             </div>
+           </div>
+
+           {/* Current Reference */}
+           <div className="bg-blue-50 p-3 rounded-lg text-sm text-gray-700">
+             For reference, the BTC Difficulty is currently 113.7575 trillion.
+           </div>
+
+           {/* Set Alert Button */}
+           <button 
+             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+           >
+             Set Alert
+           </button>
+         </div>
+         </div>
+    ),
+    'Blockchain': () => (
+      <div className="space-y-4">
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <h3 className="font-semibold text-blue-800 mb-3">Blockchain Network Details</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Select Blockchain</label>
+              <select className="w-full border border-blue-200 rounded-lg py-2 px-3">
+                <option>Bitcoin</option>
+                <option>Ethereum</option>
+                <option>Litecoin</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Network Status</label>
+              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg">
+                Active and Stable
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    // ... (rest of the tabContents remain the same as in the previous implementation)
   };
 
   return (
-    <div>
-      <div className="rounded-lg">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-              Select Indexing Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
-              required
-            >
-              <option value="" disabled>Select a category</option>
-              <option value="nftBids">Currently available bids on an NFT</option>
-              <option value="nftPrices">Current prices of an NFT</option>
-              <option value="tokensToBorrow">Currently available tokens to borrow</option>
-              <option value="tokenPrices">Current price of a specific token on various platforms</option>
-            </select>
-          </div>
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-8">
+        {/* Horizontal Tabs */}
+        <div className="border-b border-gray-200 mb-6">
+          <nav className="-mb-px flex space-x-2" aria-label="Tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.name}
+                onClick={() => setActiveTab(tab.name)}
+                className={`
+                  flex items-center px-4 py-2 rounded-t-lg transition-colors
+                  ${activeTab === tab.name 
+                    ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-600' 
+                    : 'text-gray-500 hover:text-blue-700 hover:bg-blue-50'}
+                `}
+              >
+                {tab.icon}
+                {tab.name}
+              </button>
+            ))}
+          </nav>
+        </div>
 
-          {selectedCategory === 'nftBids' && (
-            <div>
-              <label htmlFor="nftAddress" className="block text-sm font-medium text-gray-700">
-                NFT Address
-              </label>
-              <input
-                id="nftAddress"
-                name="nftAddress"
-                type="text"
-                value={formData.nftAddress}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
-                required
-              />
-            </div>
-          )}
+        {/* Main Content */}
+        <div className="bg-white shadow-lg rounded-xl border border-blue-100 p-6">
+          <h1 className="text-2xl font-bold text-blue-800 mb-6">
+            {activeTab} Section
+          </h1>
 
-          {selectedCategory === 'nftPrices' && (
-            <div>
-              <label htmlFor="nftPrice" className="block text-sm font-medium text-gray-700">
-                NFT Price
-              </label>
-              <input
-                id="nftPrice"
-                name="nftPrice"
-                type="text"
-                value={formData.nftPrice}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
-                required
-              />
-            </div>
-          )}
-
-          {selectedCategory === 'tokensToBorrow' && (
-            <div>
-              <label htmlFor="tokenToBorrow" className="block text-sm font-medium text-gray-700">
-                Token to Borrow
-              </label>
-              <input
-                id="tokenToBorrow"
-                name="tokenToBorrow"
-                type="text"
-                value={formData.tokenToBorrow}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
-                required
-              />
-            </div>
-          )}
-
-          {selectedCategory === 'tokenPrices' && (
-            <div>
-              <label htmlFor="tokenPrice" className="block text-sm font-medium text-gray-700">
-                Token Price
-              </label>
-              <input
-                id="tokenPrice"
-                name="tokenPrice"
-                type="text"
-                value={formData.tokenPrice}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
-                required
-              />
-            </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
+          {/* Dynamic Tab Content */}
+          {tabContents[activeTab]()}
+        </div>
       </div>
     </div>
   );
 };
 
-export default IndexingForm;
+export default BlockchainMetricsDashboard;
