@@ -3,23 +3,21 @@ const prisma = new PrismaClient()
 
 async function main() {
   const alice = await prisma.user.upsert({
-    where: { number: '9999999999' },
+    where: { email: 'admin@gmail.com' },
     update: {},
     create: {
-      number: '9999999999',
-      email: 'ketan9@gmail.com',
-      password: 'ketan',
-      name: 'ketan9',
+      email: 'admin@gmail.com',
+      password: 'admin',
+      name: 'admin',
     },
   })
   const bob = await prisma.user.upsert({
-    where: { number: '8888888888' },
+    where: { email: 'user@gmail.com' },
     update: {},
     create: {
-      number: '8888888888',
-      password: 'ketan',
-      name: 'ketan8',
-      email: 'ketan8@gmail.com',
+      password: 'user',
+      name: 'user',
+      email: 'user@gmail.com',
     },
   })
   console.log({ alice, bob })
@@ -31,5 +29,4 @@ main()
   .catch(async (e) => {
     console.error(e)
     await prisma.$disconnect()
-    process.exit(1)
   })

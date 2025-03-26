@@ -15,32 +15,57 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String?   @unique
-  name      String?
-  number    String    @unique
-  password  String
-  SolanaWallet SolanaWallet[]
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  password           String
+  googleId           String?  @unique
+  name               String?
+  postgresCredentials Json?
+  indexingConfigs    IndexingConfig[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
-model SolanaWallet {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @default(0)
-  address    String   @unique
-  threshold  Float
-  createdAt  DateTime @default(now())
-  transactions Transaction[]
-  user       User     @relation(fields: [userId], references: [id])
+model IndexingConfig {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  
+  // Indexing categories
+  indexNFTBids       Boolean  @default(false)
+  indexNFTPrices     Boolean  @default(false)
+  indexBorrowTokens  Boolean  @default(false)
+  indexTokenPrices   Boolean  @default(false)
+  
+  // Specific configuration details
+  targetNFTCollections String[]
+  targetTokens         String[]
+  
+  // Helius webhook configuration
+  webhookId          String?
+  webhookUrl         String?
+  
+  status             IndexingStatus @default(PENDING)
+  lastSyncedAt       DateTime?
+  TokenPrice         TokenPrice[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
-model Transaction {
-  id         Int      @id @default(autoincrement())
-  walletId   Int
-  amount     Float
-  signature  String   
-  timestamp  DateTime @default(now())
-  wallet     SolanaWallet @relation(fields: [walletId], references: [id])
-  tweeted    Boolean @default(false)
+model TokenPrice {
+  id                 String   @id @default(cuid())
+  tokenAddress       String
+  price              Decimal
+  indexingConfigId   String
+  indexingConfig     IndexingConfig @relation(fields: [indexingConfigId], references: [id])
+  createdAt          DateTime @default(now())
+}
+
+enum IndexingStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  ERROR
 }
 
 enum AuthType {

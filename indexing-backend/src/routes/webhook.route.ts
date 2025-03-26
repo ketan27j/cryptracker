@@ -15,13 +15,11 @@ router.post("/helius-webhook", async (req, res) => {
         if (!response) {
           return res.status(400).json({ error: 'Invalid webhook payload' });
         }
-        const transactionRes = await prisma.transaction.create({
+        const transactionRes = await prisma.tokenPrice.create({
             data: {
-              walletId: 14,
-              amount: 1,
-              signature: response,
-              tweeted: false,
-              timestamp: new Date(),
+              tokenAddress: "SOL",
+              price: 1,
+              indexingConfigId: "1",
             },
           });
         
