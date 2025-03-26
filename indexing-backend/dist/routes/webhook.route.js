@@ -81,4 +81,26 @@ router.get('/get-webhook', async (req, res) => {
         res.status(500).json({ error: 'Failed to register webhook' });
     }
 });
+router.post('/delete-webhook', async (req, res) => {
+    try {
+        const HELIUS_API_KEY = process.env.HELIUS_API_KEY || '';
+        const webhookUrl = process.env.WEBHOOK_URL || '';
+        const helius = new helius_sdk_1.Helius(HELIUS_API_KEY);
+        let webhookId = req.body.webhookId;
+        console.log('webhookId:', webhookId);
+        const webhookResponse = await helius.deleteWebhook(webhookId);
+        if (webhookResponse) {
+            res.status(200).json({
+                success: true,
+            });
+        }
+        else {
+            res.status(500).json({ error: 'Failed to delete webhook' });
+        }
+    }
+    catch (error) {
+        console.error('Error deleting webhook:', error);
+        res.status(500).json({ error: 'Failed to delete webhook' });
+    }
+});
 exports.default = router;

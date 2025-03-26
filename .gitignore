@@ -4,10 +4,12 @@
 /node_modules
 /backend/node_modules
 /prisma-client/node_modules
-/apps/*/node_modules
+/cryptracker-web/node_modules
 /packages/*/node_modules
 /backend/dist
+/indexing-backend/dist
 /prisma-client/dist
+/cryptracker-web/dist
 .turbo
 /.pnp
 .pnp.*
