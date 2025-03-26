@@ -30,7 +30,7 @@ const Settings: React.FC = () => {
                 id="host"
                 type="text"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
                 value={dbCredentials.host}
                 onChange={(e) =>
                   setDbCredentials({ ...dbCredentials, host: e.target.value })
@@ -45,7 +45,7 @@ const Settings: React.FC = () => {
                 id="port"
                 type="number"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
                 value={dbCredentials.port}
                 onChange={(e) =>
                   setDbCredentials({ ...dbCredentials, port: parseInt(e.target.value) })
@@ -62,7 +62,7 @@ const Settings: React.FC = () => {
               id="database"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
               value={dbCredentials.database}
               onChange={(e) =>
                 setDbCredentials({ ...dbCredentials, database: e.target.value })
@@ -78,7 +78,7 @@ const Settings: React.FC = () => {
               id="username"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
               value={dbCredentials.username}
               onChange={(e) =>
                 setDbCredentials({ ...dbCredentials, username: e.target.value })
@@ -94,7 +94,7 @@ const Settings: React.FC = () => {
               id="dbPassword"
               type="password"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
               value={dbCredentials.password}
               onChange={(e) =>
                 setDbCredentials({ ...dbCredentials, password: e.target.value })

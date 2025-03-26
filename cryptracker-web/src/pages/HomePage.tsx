@@ -21,14 +21,12 @@ export default function HomePage() {
     if (isLoginOpen) setIsLoginOpen(false);
   };
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
+  const handleLoginSubmit = () => {
     console.log('Login submitted', { loginEmail, loginPassword });
     // Add login logic here
   };
 
-  const handleSignupSubmit = (e) => {
-    e.preventDefault();
+  const handleSignupSubmit = () => {
     console.log('Signup submitted', { signupEmail, signupPassword });
     // Add signup logic here
   };
