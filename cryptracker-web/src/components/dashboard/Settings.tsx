@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const Settings: React.FC = () => {
   const [dbCredentials, setDbCredentials] = useState({
@@ -8,15 +11,49 @@ const Settings: React.FC = () => {
     username: '',
     password: '',
   });
+  const apiHost = 'http://localhost:3004';
+  
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement database connection logic
-    console.log('Database credentials:', dbCredentials);
+    setIsLoading(true);
+    
+    try {
+      // Prepare connection details object
+      const connectionDetails = {
+        host: dbCredentials.host,
+        port: dbCredentials.port,
+        databaseName: dbCredentials.database,
+        userName: dbCredentials.username,
+        password: dbCredentials.password
+      };
+      
+      // Make POST request to the API
+      const response = await axios.post(apiHost + '/api/user/connect-database', connectionDetails);
+      
+      if (response.data.success) {
+        toast.success('Database connected successfully!');
+      } else {
+        toast.error(response.data.message || 'Failed to connect to database');
+      }
+    } catch (error) {
+      console.error('Error connecting to database:', error);
+      let errorMessage = 'Failed to connect to database';
+      
+      if (axios.isAxiosError(error) && error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+      }
+      
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div>
+      <ToastContainer position="top-right" autoClose={5000} />
       <h1 className="text-2xl font-bold mb-4">Settings</h1>
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-semibold mb-4">Database Configuration</h2>
@@ -105,9 +142,12 @@ const Settings: React.FC = () => {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={isLoading}
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
             >
-              Save Database Configuration
+              {isLoading ? 'Connecting...' : 'Save Database Configuration'}
             </button>
           </div>
         </form>
