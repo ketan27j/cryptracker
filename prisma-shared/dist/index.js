@@ -1,5 +1,4 @@
 "use strict";
-// import { PrismaClient } from '@prisma/client'
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -16,15 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prisma = void 0;
-// const prismaClientSingleton = () => {
-//   return new PrismaClient()
-// }
-// declare global {
-//   var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>
-// }
-// const prisma: ReturnType<typeof prismaClientSingleton> = globalThis.prismaGlobal ?? prismaClientSingleton()
-// export default prisma
-// prisma-shared/src/index.ts
 const client_1 = require("@prisma/client");
 __exportStar(require("@prisma/client"), exports);
 // Export a singleton client instance

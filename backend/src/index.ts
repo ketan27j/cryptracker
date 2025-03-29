@@ -1,8 +1,9 @@
-import axios from "axios";
 import express from "express";
 import { PrismaClient } from 'prisma-shared';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import userRoutes from './routes/user.routes';
+import subscriptionRoutes from './routes/subscription.routes';
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -26,11 +27,9 @@ app.get("/status", async (req, res) => {
     }
 });
 
-// Import routes
-import userRoutes from './routes/user.routes';
-
 // Use routes
 app.use('/api/user', userRoutes);
+app.use('/api/subscription', subscriptionRoutes);   
 
 app.listen(3004, () => {
     console.log("server is running on port 3004");
