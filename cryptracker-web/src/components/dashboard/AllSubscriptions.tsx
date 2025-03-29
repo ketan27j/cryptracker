@@ -10,11 +10,14 @@ import {
 import  prisma  from 'prisma-shared'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAtom } from 'jotai';
+import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 
 const AllSubscriptions = () => {
   type Subscription = prisma.Subscription
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
   const [data, setData] = useState([]);
+  const [count, setCount] = useAtom(subscriptionsAtom); 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
@@ -25,14 +28,14 @@ const AllSubscriptions = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_HOST}/api/subscription/all-subscriptions`);
-        setData(response.data.subscriptions); // Assuming the API returns an array of subscriptions
+        setData(response.data.subscriptions); // Update Recoil state
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [count]);
 
   // Column definition
   const columnHelper = createColumnHelper<Subscription>();
@@ -106,7 +109,7 @@ const deleteRow = async (rowData: Subscription) => {
         const response = await axios.post(`${API_HOST}/api/subscription/delete-subscription`, { id: rowData.id });
         if (response && response.data.success) {
             toast.success('Subscription deleted successfully!');
-            setData(data.filter((row: Subscription) => row.id !== rowData.id));
+            setCount(c => c + 1);
         }
     } catch (error) {
         console.error('Error deleting subscription:', error);

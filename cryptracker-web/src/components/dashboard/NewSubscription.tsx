@@ -5,9 +5,12 @@ import {
   Image
 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useAtom } from 'jotai';
+import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 
 const NewSubscription = () => {
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
+  const [count, setCount] = useAtom(subscriptionsAtom); 
   const [activeTab, setActiveTab] = useState('TOKEN');
   const [address, setAddress] = useState('');
   const [transactionType, setTransactionType] = useState('TRANSFER');
@@ -24,9 +27,12 @@ const NewSubscription = () => {
         transactionType : transactionType,
         addressType: activeTab,
       };
-      console.log('Creating subscription:', payload);
       const response = await axios.post(API_HOST + '/api/subscription/new-subscription', payload); 
-      console.log('Subscription created:', response.data);
+
+      if(response.data.success) {
+        setCount(c => c + 1);
+      }
+
       toast.success('Subscription created successfully!');
     } catch (error) {
       console.error('Error creating subscription:', error);
