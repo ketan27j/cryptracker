@@ -4,38 +4,39 @@ import {
   Layers, 
   Image
 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const NewSubscription = () => {
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
-  const [activeTab, setActiveTab] = useState('nft');
+  const [activeTab, setActiveTab] = useState('TOKEN');
   const [address, setAddress] = useState('');
-  const [subscriptionType, setSubscriptionType] = useState('TRANSFER');
+  const [transactionType, setTransactionType] = useState('TRANSFER');
 
   const tabs = [
-    { id: 'nft', icon: <Image className="w-5 h-5" />, label: 'NFT' },
-    { id: 'token', icon: <Layers className="w-5 h-5" />, label: 'Token' },
+    { id: 'TOKEN', icon: <Layers className="w-5 h-5" />, label: 'TOKEN' },
+    { id: 'NFT', icon: <Image className="w-5 h-5" />, label: 'NFT' },
   ];
 
   const handleSubscription = async () => {
     try {
       const payload = {
         address: address,
-        subscriptionType : subscriptionType,
-        type: activeTab,
+        transactionType : transactionType,
+        addressType: activeTab,
       };
       console.log('Creating subscription:', payload);
       const response = await axios.post(API_HOST + '/api/subscription/new-subscription', payload); 
       console.log('Subscription created:', response.data);
-      alert('Subscription created successfully!');
+      toast.success('Subscription created successfully!');
     } catch (error) {
       console.error('Error creating subscription:', error);
-      alert('Failed to create subscription. Please try again.');
+      toast.error('Failed to create subscription. Please try again.');
     }
   };
 
   const renderTabContent = () => {
     switch(activeTab) {
-      case 'nft':
+      case 'NFT':
         return (
           <div className="bg-white shadow-lg rounded-lg p-6">
             <div className="grid md:grid-cols-1 gap-6">
@@ -52,8 +53,8 @@ const NewSubscription = () => {
                         />
                     <label className="text-lg w-5 font-medium text-gray-700 whitespace-nowrap"> for </label>
                     <select 
-                          value={subscriptionType}
-                          onChange={(e) => setSubscriptionType(e.target.value)}
+                          value={transactionType}
+                          onChange={(e) => setTransactionType(e.target.value)}
                           className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
                       <option>TRASNSER</option>
                       <option>Buy</option>
@@ -71,7 +72,7 @@ const NewSubscription = () => {
           </div>
         );
       
-      case 'token':
+      case 'TOKEN':
         return (
           <div className="bg-white shadow-lg rounded-lg p-6">
             <div className="grid md:grid-cols-1 gap-6">
@@ -88,8 +89,8 @@ const NewSubscription = () => {
                         />
                     <label className="text-lg w-5 font-medium text-gray-700 whitespace-nowrap"> for </label>
                     <select 
-                          value={subscriptionType}
-                          onChange={(e) => setSubscriptionType(e.target.value)}
+                          value={transactionType}
+                          onChange={(e) => setTransactionType(e.target.value)}
                           className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
                       <option>Transfer</option>
                       <option>SMS</option>

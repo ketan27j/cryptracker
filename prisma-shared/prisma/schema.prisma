@@ -30,9 +30,9 @@ model Subscription {
   id                Int        @id @default(autoincrement())
   userId            Int
   user              User       @relation(fields: [userId], references: [id])
-  subscriptionType  String
-  targetNFTCollections String?
-  targetTokens         String?
+  addressType       AddressType @default(TOKEN)  
+  transactionType   String?
+  address           String?
   webhookId         String?
   webhookUrl        String?
   status            SubscriptionStatus @default(STOPPED)
@@ -53,7 +53,7 @@ model TokenPrice {
 
 enum SubscriptionStatus {
   PENDING
-  ACTIVE
+  RUNNING
   STOPPED
   ERROR
 }
@@ -61,4 +61,9 @@ enum SubscriptionStatus {
 enum AuthType {
   Google
   Github
+}
+
+enum AddressType {
+  TOKEN
+  NFT
 }

@@ -12,15 +12,16 @@ const helius = new Helius(HELIUS_API_KEY)
 
 router.post("/new-subscription", async (req, res) => {
     try {
-        const { address, subscriptionType, type } = req.body;
+        const { address, transactionType, addressType } = req.body;
         console.log('address:', address);
-        console.log('subscriptionType:', subscriptionType);
+        console.log('transactionType:', transactionType);
         const response = await prisma.subscription.create({
             data: {
                 userId : 1,
                 webhookUrl: webhookUrl,
-                targetTokens: address,
-                subscriptionType: subscriptionType,
+                address: address,
+                transactionType: transactionType,
+                addressType: addressType,
             },
           });
           if(response) {
@@ -31,6 +32,40 @@ router.post("/new-subscription", async (req, res) => {
     } catch (error) {
         console.error('Error creating subscription:', error);
         res.status(500).json({ error: 'Failed to create subscription' });
+    }
+});
+
+router.get("/all-subscriptions", async (req, res) => {
+    try {
+        const subscriptions = await prisma.subscription.findMany();
+        if(subscriptions) {
+            res.status(200).json({
+                success: true,
+                subscriptions: subscriptions
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching subscriptions:', error);
+        res.status(500).json({ error: 'Failed to fetch subscriptions' });
+    }
+});
+
+router.post("/delete-subscription", async (req, res) => {
+    try {
+        const { id } = req.body;
+        const response = await prisma.subscription.delete({
+            where: {
+                id: id
+            }
+        });
+        if(response) {
+            res.status(200).json({
+                success: true,
+            });
+        }
+    } catch (error) {
+        console.error('Error deleting subscription:', error);
+        res.status(500).json({ error: 'Failed to delete subscription' });
     }
 });
 
