@@ -136,7 +136,7 @@ const deleteRow = async (rowData: Subscription) => {
             {row.status}
           </span>
         </div>
-        <div className="space-y-2 text-sm text-gray-600">
+        <div className="space-y-2 text-sm text-gray-600 break-words">
           <p><strong>Address Type:</strong> {row.addressType}</p>
           <p><strong>Transaction Type:</strong> {row.transactionType}</p>
           <p><strong>Address:</strong> {row.address}</p>
@@ -146,7 +146,7 @@ const deleteRow = async (rowData: Subscription) => {
             onClick={() => deleteRow(row)}
             className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
           >
-            View Details
+            Delete
           </button>
         </div>
       </div>

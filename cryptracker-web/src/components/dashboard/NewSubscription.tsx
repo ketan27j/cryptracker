@@ -20,7 +20,7 @@ const NewSubscription = () => {
     { id: 'NFT', icon: <Image className="w-5 h-5" />, label: 'NFT' },
   ];
 
-  const handleSubscription = async () => {
+  const createSubscription = async () => {
     try {
       const payload = {
         address: address,
@@ -68,7 +68,7 @@ const NewSubscription = () => {
                     </select>
                   </div>
                   <button 
-                        onClick={handleSubscription}
+                        onClick={createSubscription}
                         className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                     Set Subscription
                   </button>
@@ -104,7 +104,7 @@ const NewSubscription = () => {
                     </select>
                   </div>
                   <button 
-                        onClick={handleSubscription}
+                        onClick={createSubscription}
                         className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                     Set Subscription
                   </button>
