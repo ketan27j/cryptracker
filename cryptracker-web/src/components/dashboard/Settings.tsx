@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { apiPost } from '../../utils/api';
 
 const Settings: React.FC = () => {
   const [dbCredentials, setDbCredentials] = useState({
@@ -30,8 +31,9 @@ const Settings: React.FC = () => {
       };
       
       // Make POST request to the API
-      const response = await axios.post(apiHost + '/api/user/connect-database', connectionDetails);
-      
+      // const response = await axios.post(apiHost + '/api/user/connect-database', connectionDetails);
+      const response = await apiPost('/api/user/connect-database', connectionDetails);
+      console.log('Response:', response.data);
       if (response.data.success) {
         toast.success('Database connected successfully!');
       } else {

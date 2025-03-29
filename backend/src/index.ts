@@ -1,11 +1,9 @@
-import axios from "axios";
 import express from "express";
 import { PrismaClient } from 'prisma-shared';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
 dotenv.config();
-const prisma = new PrismaClient();
 const app = express()
 
 // Middleware
@@ -28,8 +26,10 @@ app.get("/status", async (req, res) => {
 
 // Import routes
 import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth.routes';
 
 // Use routes
+app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
 app.listen(3004, () => {
