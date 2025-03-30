@@ -7,6 +7,7 @@ import {
 import { toast } from 'react-toastify';
 import { useAtom } from 'jotai';
 import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
+import { apiPost } from '../../utils/api';
 
 const NewSubscription = () => {
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
@@ -27,7 +28,7 @@ const NewSubscription = () => {
         transactionType : transactionType,
         addressType: activeTab,
       };
-      const response = await axios.post(API_HOST + '/api/subscription/new-subscription', payload); 
+      const response = await apiPost('/api/subscription/new-subscription', payload); 
 
       if(response.data.success) {
         setCount(c => c + 1);

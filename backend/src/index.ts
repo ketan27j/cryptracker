@@ -3,7 +3,6 @@ import { PrismaClient } from 'prisma-shared';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
-import userRoutes from './routes/user.routes';
 import subscriptionRoutes from './routes/subscription.routes';
 
 dotenv.config();

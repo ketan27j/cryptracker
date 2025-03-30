@@ -12,7 +12,6 @@ const Settings: React.FC = () => {
     username: '',
     password: '',
   });
-  const apiHost = 'http://localhost:3004';
   
   const [isLoading, setIsLoading] = useState(false);
 
