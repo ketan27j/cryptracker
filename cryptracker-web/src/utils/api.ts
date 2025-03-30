@@ -1,5 +1,6 @@
 
-const API_BASE_URL = 'http://localhost:3004';
+// const API_BASE_URL = 'http://localhost:3004';
+const API_BASE_URL = '';
 
 export const apiGet = async (endpoint: string) => {
     console.log('API GET Request:', `${API_BASE_URL}/${endpoint}`);
