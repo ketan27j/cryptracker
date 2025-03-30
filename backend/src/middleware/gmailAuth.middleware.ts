@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from 'prisma-shared';
 
 const prisma = new PrismaClient();
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '935241688123-bl4lfpm43k7hguhg8aht2p5c753nihiu.apps.googleusercontent.com';
