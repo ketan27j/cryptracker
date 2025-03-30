@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAtom } from 'jotai';
 import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 import { CircleStop, Play, Trash2 } from 'lucide-react';
+import { apiGet, apiPost } from '../../utils/api';
 
 const AllSubscriptions = () => {
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
@@ -27,7 +28,8 @@ const AllSubscriptions = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_HOST}/api/subscription/all-subscriptions`);
+        // const response = await axios.get(`${API_HOST}/api/subscription/all-subscriptions`);
+        const response = await apiGet(`api/subscription/all-subscriptions`);
         setData(response.data.subscriptions);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -125,7 +127,7 @@ const AllSubscriptions = () => {
   const deleteRow = async (rowData: Subscription) => {
       console.log('Row action for:', rowData);
       try {
-          const response = await axios.post(`${API_HOST}/api/subscription/delete-subscription`, { id: rowData.id });
+          const response = await apiPost(`api/subscription/delete-subscription`, { id: rowData.id });
           if (response && response.data.success) {
               toast.success('Subscription deleted successfully!');
               setCount(c => c + 1);
@@ -137,7 +139,7 @@ const AllSubscriptions = () => {
 
   const startSubscription = async (rowData: Subscription) => {
     try {           
-        const response = await axios.post(`${API_HOST}/api/subscription/start-subscription`, { 
+        const response = await apiPost(`api/subscription/start-subscription`, { 
             id: rowData.id
         });
         
@@ -153,7 +155,7 @@ const AllSubscriptions = () => {
 
   const stopSubscription = async (rowData: Subscription) => {
     try {           
-        const response = await axios.post(`${API_HOST}/api/subscription/stop-subscription`, { 
+        const response = await apiPost(`api/subscription/stop-subscription`, { 
             id: rowData.id
         });
         
@@ -193,7 +195,14 @@ const AllSubscriptions = () => {
         </div>
         <div className="mt-4 flex justify-end space-x-2">
           <button 
-            onClick={() => toggleSubscriptionStatus(row)}
+            // onClick={() => toggleSubscriptionStatus(row)}
+            onClick={() => {
+              if (subscriptionRow.status === SubscriptionStatus.RUNNING) {
+                stopSubscription(subscriptionRow);
+              } else {
+                startSubscription(subscriptionRow);
+              }
+            }}
             className={`${
               row.status === SubscriptionStatus.RUNNING 
                 ? 'bg-red-400 hover:bg-red-500' 
