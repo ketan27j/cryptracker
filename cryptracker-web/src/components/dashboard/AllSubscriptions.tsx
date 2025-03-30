@@ -180,6 +180,7 @@ const AllSubscriptions = () => {
 
   // Mobile card view for each row
   const MobileRowCard = ({ row }: { row: Subscription }) => {
+    const subscriptionRow = row as Subscription;
     return (
       <div className="bg-white shadow rounded-lg p-4 mb-4">
         <div className="flex justify-between items-center mb-2">
