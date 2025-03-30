@@ -146,7 +146,8 @@ export const authenticateJWT = async (
 
     // Find the user in the database
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      // where: { id: decoded.userId },
+      where: { googleId: decoded.userId },
     });
 
     if (!user) {
@@ -204,7 +205,8 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     // Find the user in the database
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      // where: { id: decoded.userId },
+      where: { googleId: decoded.userId },
     });
 
     if (!user) {
@@ -262,7 +264,8 @@ export const validateUser = async (
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      // where: { id: req.user.id },
+      where: { googleId: req.user.id },
     });
 
     if (!user) {
