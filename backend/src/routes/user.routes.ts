@@ -20,7 +20,6 @@ router.get("/status", async (req, res) => {
 router.post("/connect-database", async (req, res) => {
     try {
         const { host, port, databaseName, userName, password } = req.body;
-        
         // Validate required parameters
         if (!host || !port || !databaseName || !userName || !password) {
             return res.status(400).json({
@@ -47,7 +46,8 @@ router.post("/connect-database", async (req, res) => {
                 portNumber,
                 databaseName,
                 userName,
-                password
+                password,
+                1
             );
             if (savedConnectionInfo) {
                 return res.status(200).json({
