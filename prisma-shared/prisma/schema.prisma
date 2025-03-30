@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = [  "native","debian-openssl-1.1.x","debian-openssl-3.0.x","linux-musl","linux-musl-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -15,60 +15,55 @@ datasource db {
 }
 
 model User {
-  id                 String   @id @default(cuid())
-  email              String   @unique
-  password           String
-  googleId           String?  @unique
-  name               String?
+  id                  Int            @id @default(autoincrement())
+  email               String         @unique
+  password            String
+  googleId            String?        @unique
+  name                String?
   postgresCredentials Json?
-  indexingConfigs    IndexingConfig[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  subscription        Subscription[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 }
 
-model IndexingConfig {
-  id                 String   @id @default(cuid())
-  userId             String
-  user               User     @relation(fields: [userId], references: [id])
-  
-  // Indexing categories
-  indexNFTBids       Boolean  @default(false)
-  indexNFTPrices     Boolean  @default(false)
-  indexBorrowTokens  Boolean  @default(false)
-  indexTokenPrices   Boolean  @default(false)
-  
-  // Specific configuration details
-  targetNFTCollections String[]
-  targetTokens         String[]
-  
-  // Helius webhook configuration
-  webhookId          String?
-  webhookUrl         String?
-  
-  status             IndexingStatus @default(PENDING)
-  lastSyncedAt       DateTime?
-  TokenPrice         TokenPrice[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+model Subscription {
+  id                Int        @id @default(autoincrement())
+  userId            Int
+  user              User       @relation(fields: [userId], references: [id])
+  addressType       AddressType @default(TOKEN)  
+  transactionType   String?
+  address           String?
+  webhookId         String?
+  webhookUrl        String?
+  status            SubscriptionStatus @default(STOPPED)
+  TokenPrice        TokenPrice[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 }
 
 model TokenPrice {
-  id                 String   @id @default(cuid())
-  tokenAddress       String
-  price              Decimal
-  indexingConfigId   String
-  indexingConfig     IndexingConfig @relation(fields: [indexingConfigId], references: [id])
-  createdAt          DateTime @default(now())
+  id             Int          @id @default(autoincrement())
+  subscriptionId Int
+  Subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  response       String
+  tokenAddress   String?
+  price          Decimal?
+  createdAt      DateTime     @default(now())
 }
 
-enum IndexingStatus {
+enum SubscriptionStatus {
   PENDING
-  ACTIVE
-  PAUSED
+  RUNNING
+  STOPPED
   ERROR
 }
 
 enum AuthType {
   Google
   Github
+}
+
+enum AddressType {
+  TOKEN
+  NFT
 }

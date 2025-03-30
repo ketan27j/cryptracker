@@ -41,12 +41,3 @@ app.listen(3003, () => {
 
 // Schedule a task to hit the API every minute
 const url = process.env.API_URL || 'http://localhost:3003/monitor';
-cron.schedule('*/15 * * * *', () => {
-    axios.get(url)
-      .then(response => {
-        console.log('API hit:', response.data);
-      })
-      .catch(error => {
-        console.error('Error hitting API:', error);
-      });
-  });

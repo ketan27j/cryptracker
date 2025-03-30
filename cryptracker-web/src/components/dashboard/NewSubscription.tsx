@@ -1,185 +1,155 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import axios from 'axios'; 
 import { 
-  Activity, Server, Zap, Database, Cpu, Cloud, Layers, Settings, Bell, 
-  PieChart, BarChart2, TrendingUp, Filter, Sliders, Grid, Target, Maximize2, Link2
+  Layers, 
+  Image
 } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useAtom } from 'jotai';
+import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 
-const BlockchainMetricsDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('Tokens');
-  const [selectedAlert, setSelectedAlert] = useState('Bitcoin');
-  const [selectedMetric, setSelectedMetric] = useState('Difficulty');
-  const [direction, setDirection] = useState('above');
-  const [threshold, setThreshold] = useState('000000');
+const NewSubscription = () => {
+  const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
+  const [count, setCount] = useAtom(subscriptionsAtom); 
+  const [activeTab, setActiveTab] = useState('TOKEN');
+  const [address, setAddress] = useState('');
+  const [transactionType, setTransactionType] = useState('TRANSFER');
 
   const tabs = [
-    { icon: <Activity className="w-5 h-5 mr-2" />, name: 'Tokens' },
-    { icon: <Server className="w-5 h-5 mr-2" />, name: 'Blockchain' },
-    { icon: <Zap className="w-5 h-5 mr-2" />, name: 'Metrics' },
-    { icon: <Database className="w-5 h-5 mr-2" />, name: 'Transactions' },
-    { icon: <Cpu className="w-5 h-5 mr-2" />, name: 'Mining' },
-    { icon: <Cloud className="w-5 h-5 mr-2" />, name: 'Network' },
-    { icon: <Layers className="w-5 h-5 mr-2" />, name: 'Blocks' },
+    { id: 'TOKEN', icon: <Layers className="w-5 h-5" />, label: 'TOKEN' },
+    { id: 'NFT', icon: <Image className="w-5 h-5" />, label: 'NFT' },
   ];
 
-  const tabContents = {
-    'Tokens': () => (
-      <div>
-         <h1 className="text-2xl font-bold text-blue-800 mb-6 flex items-center">
-           <Bell className="mr-3 text-blue-600" /> Blockchain Metric Alert
-         </h1>
+  const createSubscription = async () => {
+    try {
+      const payload = {
+        address: address,
+        transactionType : transactionType,
+        addressType: activeTab,
+      };
+      const response = await axios.post(API_HOST + '/api/subscription/new-subscription', payload); 
 
-         <p className="text-gray-600 mb-6">Monitor on-chain metrics tied to the BTC & ETH blockchains.</p>
+      if(response.data.success) {
+        setCount(c => c + 1);
+      }
 
-         <div className="space-y-4">
-           <div className="grid grid-cols-3 gap-4">
-             {/* Alert Type */}
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-2">Send me an</label>
-               <div className="relative">
-                 <select 
-                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
-                 >
-                   <option>Email</option>
-                   <option>SMS</option>
-                   <option>Push Notification</option>
-                 </select>
-               </div>
-             </div>
+      toast.success('Subscription created successfully!');
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+      toast.error('Failed to create subscription. Please try again.');
+    }
+  };
 
-             {/* Blockchain */}
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-2">Blockchain</label>
-               <div className="relative">
-                 <select 
-                   value={selectedAlert}
-                   onChange={(e) => setSelectedAlert(e.target.value)}
-                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
-                 >
-                   <option value="Bitcoin">Bitcoin</option>
-                   <option value="Ethereum">Ethereum</option>
-                 </select>
-               </div>
-             </div>
-
-             {/* Metric */}
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-2">Metric</label>
-               <div className="relative">
-                 <select 
-                   value={selectedMetric}
-                   onChange={(e) => setSelectedMetric(e.target.value)}
-                   className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
-                 >
-                   <option value="Difficulty">Difficulty</option>
-                   <option value="BlockHeight">Block Height</option>
-                   <option value="TransactionsPerBlock">Transactions per Block</option>
-                   <option value="BlockSize">Block Size</option>
-                 </select>
-               </div>
-             </div>
-           </div>
-
-           {/* Condition */}
-           <div className="grid grid-cols-3 gap-4">
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-2">Direction</label>
-               <select 
-                 value={direction}
-                 onChange={(e) => setDirection(e.target.value)}
-                 className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
-               >
-                 <option value="above">goes above</option>
-                 <option value="below">goes below</option>
-               </select>
-             </div>
-
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-2">Threshold</label>
-               <input 
-                 type="text" 
-                 value={threshold}
-                 onChange={(e) => setThreshold(e.target.value)}
-                 className="w-full border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
-               />
-             </div>
-           </div>
-
-           {/* Current Reference */}
-           <div className="bg-blue-50 p-3 rounded-lg text-sm text-gray-700">
-             For reference, the BTC Difficulty is currently 113.7575 trillion.
-           </div>
-
-           {/* Set Alert Button */}
-           <button 
-             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-           >
-             Set Alert
-           </button>
-         </div>
-         </div>
-    ),
-    'Blockchain': () => (
-      <div className="space-y-4">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-3">Blockchain Network Details</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Select Blockchain</label>
-              <select className="w-full border border-blue-200 rounded-lg py-2 px-3">
-                <option>Bitcoin</option>
-                <option>Ethereum</option>
-                <option>Litecoin</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Network Status</label>
-              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg">
-                Active and Stable
+  const renderTabContent = () => {
+    switch(activeTab) {
+      case 'NFT':
+        return (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <div className="grid md:grid-cols-1 gap-6">
+              <div className="space-y-4">
+                <div className="p-4 min-w-xs mx-2">
+                  <div className="flex flex-wrap items-center gap-0 space-x-2 space-y-1 p-4">
+                    <label className="text-lg font-medium text-gray-700 break-words">
+                      Create a subscription for NFT address
+                    </label>
+                    <input type="text" 
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+                        />
+                    <label className="text-lg w-5 font-medium text-gray-700 whitespace-nowrap"> for </label>
+                    <select 
+                          value={transactionType}
+                          onChange={(e) => setTransactionType(e.target.value)}
+                          className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
+                      <option>TRASNSER</option>
+                      <option>Buy</option>
+                      <option>Sell</option>
+                    </select>
+                  </div>
+                  <button 
+                        onClick={createSubscription}
+                        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Set Subscription
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    ),
-    // ... (rest of the tabContents remain the same as in the previous implementation)
+        );
+      
+      case 'TOKEN':
+        return (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <div className="grid md:grid-cols-1 gap-6">
+              <div className="space-y-4">
+                <div className="p-4 min-w-xs mx-2">
+                  <div className="flex flex-wrap items-center gap-0 space-x-2 space-y-1 p-4">
+                    <label className="text-lg font-medium text-gray-700 break-words">
+                      Create a subscription for token address
+                    </label>
+                    <input type="text" 
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300"
+                        />
+                    <label className="text-lg w-5 font-medium text-gray-700 whitespace-nowrap"> for </label>
+                    <select 
+                          value={transactionType}
+                          onChange={(e) => setTransactionType(e.target.value)}
+                          className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
+                      <option>Transfer</option>
+                      <option>SMS</option>
+                      <option>Push Notification</option>
+                    </select>
+                  </div>
+                  <button 
+                        onClick={createSubscription}
+                        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Set Subscription
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
+      default:
+        return <div>Select a tab to view content</div>;
+    }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8">
-        {/* Horizontal Tabs */}
-        <div className="border-b border-gray-200 mb-6">
-          <nav className="-mb-px flex space-x-2" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.name}
-                onClick={() => setActiveTab(tab.name)}
-                className={`
-                  flex items-center px-4 py-2 rounded-t-lg transition-colors
-                  ${activeTab === tab.name 
-                    ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-600' 
-                    : 'text-gray-500 hover:text-blue-700 hover:bg-blue-50'}
-                `}
-              >
-                {tab.icon}
-                {tab.name}
-              </button>
-            ))}
-          </nav>
+    <div className="flex flex-col min-h-0 bg-white">
+      {/* Top Navigation */}
+      <div className="bg-blue-50 border-b border-blue-100">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center p-4">
+            <nav className="flex space-x-4">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded ${
+                    activeTab === tab.id 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-500 hover:bg-blue-50'
+                  }`}>
+                  {tab.icon}
+                  <span className="text-sm">{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="bg-white shadow-lg rounded-xl border border-blue-100 p-6">
-          <h1 className="text-2xl font-bold text-blue-800 mb-6">
-            {activeTab} Section
-          </h1>
-
-          {/* Dynamic Tab Content */}
-          {tabContents[activeTab]()}
-        </div>
+      {/* Main Content Area */}
+      <div className="flex-1">
+        {renderTabContent()}
       </div>
     </div>
   );
 };
 
-export default BlockchainMetricsDashboard;
+export default NewSubscription;

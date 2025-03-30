@@ -8,4 +8,7 @@ export default defineConfig({
     outDir: '../backend/dist/clientApp', // Change this to your desired output directory
     emptyOutDir: true, // Optional: Clean the directory before building
   },
+  define: {
+    'process.env': {}
+  }
 })
