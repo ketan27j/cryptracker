@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { 
   useReactTable, 
   getCoreRowModel, 
@@ -16,7 +15,6 @@ import { CircleStop, Play, Trash2 } from 'lucide-react';
 import { apiGet, apiPost } from '../../utils/api';
 
 const AllSubscriptions = () => {
-  const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
   const [data, setData] = useState([]);
   const [count, setCount] = useAtom(subscriptionsAtom); 
   const [pagination, setPagination] = useState({
@@ -30,7 +28,7 @@ const AllSubscriptions = () => {
       try {
         // const response = await axios.get(`${API_HOST}/api/subscription/all-subscriptions`);
         const response = await apiGet(`api/subscription/all-subscriptions`);
-        setData(response.data.subscriptions);
+        setData(response.subscriptions);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -128,7 +126,7 @@ const AllSubscriptions = () => {
       console.log('Row action for:', rowData);
       try {
           const response = await apiPost(`api/subscription/delete-subscription`, { id: rowData.id });
-          if (response && response.data.success) {
+          if (response && response.success) {
               toast.success('Subscription deleted successfully!');
               setCount(c => c + 1);
           }
@@ -143,7 +141,7 @@ const AllSubscriptions = () => {
             id: rowData.id
         });
         
-        if (response && response.data.success) {
+        if (response && response.success) {
             toast.success(`Subscription ${rowData.status === SubscriptionStatus.RUNNING ? 'stopped' : 'started'} successfully!`);
             setCount(c => c + 1);
         }
@@ -159,7 +157,7 @@ const AllSubscriptions = () => {
             id: rowData.id
         });
         
-        if (response && response.data.success) {
+        if (response && response.success) {
             toast.success(`Subscription ${rowData.status === SubscriptionStatus.RUNNING ? 'stopped' : 'started'} successfully!`);
             setCount(c => c + 1);
         }

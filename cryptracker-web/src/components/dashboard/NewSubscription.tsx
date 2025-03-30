@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios'; 
 import { 
   Layers, 
   Image
@@ -10,7 +9,6 @@ import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 import { apiPost } from '../../utils/api';
 
 const NewSubscription = () => {
-  const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
   const [, setCount] = useAtom(subscriptionsAtom); 
   const [activeTab, setActiveTab] = useState('TOKEN');
   const [address, setAddress] = useState('');
@@ -28,9 +26,9 @@ const NewSubscription = () => {
         transactionType : transactionType,
         addressType: activeTab,
       };
-      const response = await apiPost('/api/subscription/new-subscription', payload); 
+      const response = await apiPost('api/subscription/new-subscription', payload); 
 
-      if(response.data.success) {
+      if(response.success) {
         setCount(c => c + 1);
       }
 

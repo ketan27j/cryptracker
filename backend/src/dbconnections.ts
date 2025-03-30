@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { prisma } from 'prisma-shared';
 
 /**
  * Connects to a PostgreSQL database and creates a HeliusAlert table
@@ -66,12 +67,13 @@ export const connectAndCreateHeliusAlertTable = async (
  * @param password User's database password
  * @returns Boolean indicating success or failure
  */
-export const storeUserDatabaseConnection = async (
+export const storeUserDatabaseConnection = async ( 
   host: string,
   port: number,
   dbName: string,
   userName: string,
-  password: string
+  password: string,
+  userId: number
 ): Promise<boolean> => {
   // Connect to the system's cryptracker database
   const pool = new Pool({
@@ -83,62 +85,26 @@ export const storeUserDatabaseConnection = async (
   });
 
   try {
-    // Get a client from the pool
-    const client = await pool.connect();
     console.log('Connected to cryptracker database');
 
-    // Create UserPostgresDatabase table if it doesn't exist
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS "UserPostgresDatabase" (
-        "id" SERIAL PRIMARY KEY,
-        "userId" INTEGER NOT NULL,
-        "host" VARCHAR(255) NOT NULL,
-        "port" INTEGER NOT NULL,
-        "databaseName" VARCHAR(255) NOT NULL,
-        "userName" VARCHAR(255) NOT NULL,
-        "password" VARCHAR(255) NOT NULL,
-        "updateDateTime" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
+    const response = await prisma.userPostgresDatabase.create({
+      data: {
+        host,
+        port,
+        databaseName: dbName,
+        userName,
+        password,
+        userId: 1
+      }
+    });
     
-    await client.query(createTableQuery);
-    
-    // Check if a record already exists for this userId
-    const checkExistingQuery = `
-      SELECT id FROM "UserPostgresDatabase" WHERE "userId" = $1;
-    `;
-    
-    const existingResult = await client.query(checkExistingQuery, [1]);
-    
-    if (existingResult.rows.length > 0) {
-      // Update existing record
-      const updateQuery = `
-        UPDATE "UserPostgresDatabase" 
-        SET "host" = $1, "port" = $2, "databaseName" = $3, "userName" = $4, "password" = $5, "updateDateTime" = CURRENT_TIMESTAMP
-        WHERE "userId" = $6;
-      `;
-      
-      await client.query(updateQuery, [host, port, dbName, userName, password, 1]);
-      console.log('Successfully updated user database connection details');
-    } else {
-      // Insert new record
-      const insertQuery = `
-        INSERT INTO "UserPostgresDatabase" ("userId", "host", "port", "databaseName", "userName", "password")
-        VALUES ($1, $2, $3, $4, $5, $6);
-      `;
-      
-      await client.query(insertQuery, [1, host, port, dbName, userName, password]);
-      console.log('Successfully inserted user database connection details');
+    if (response) {
+      console.log('Successfully inserted database connection details');
+      return true;
     }
-    
-    client.release();
-    await pool.end();
-    
-    return true;
+    return false;
   } catch (error) {
-    console.error('Error storing user database connection details:', error);
-    await pool.end();
-    
+    console.error('Error saving database connection details:', error);
     return false;
   }
 };

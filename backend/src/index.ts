@@ -1,5 +1,4 @@
 import express from "express";
-import { PrismaClient } from 'prisma-shared';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
@@ -13,9 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'clientApp')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'clientApp', 'index.html'));
-});
+
 
 app.get("/status", async (req, res) => {
     try {
@@ -40,7 +37,9 @@ import authRoutes from './routes/auth.routes';
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/subscription', subscriptionRoutes);   
-
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'clientApp', 'index.html'));
+});
 app.listen(3004, () => {
     console.log("server is running on port 3004");
 })
