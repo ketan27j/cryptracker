@@ -3,7 +3,7 @@
 
 SolIndexer is a robust blockchain indexing platform that enables developers to seamlessly integrate and index Solana blockchain data into PostgreSQL databases. By leveraging Helius webhooks, CrypTracker eliminates the complexity of managing RPC nodes, Geyser plugins, validators, or custom webhook infrastructure.
 
-![SolIndexer Architecture](https://github.com/ketan27j/cryptracker/docs/architecture.png)
+![SolIndexer Architecture](https://github.com/ketan27j/cryptracker/blob/main/docs/architecture.png)
 
 ## Features
 
