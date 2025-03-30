@@ -7,14 +7,14 @@ import {
   flexRender,
   createColumnHelper 
 } from '@tanstack/react-table';
-import  prisma  from 'prisma-shared'; 
+import {Subscription,SubscriptionStatus} from '../../model/subscription'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAtom } from 'jotai';
 import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
+import { CircleStop, Play, Trash2 } from 'lucide-react';
 
 const AllSubscriptions = () => {
-  type Subscription = prisma.Subscription
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
   const [data, setData] = useState([]);
   const [count, setCount] = useAtom(subscriptionsAtom); 
@@ -28,7 +28,7 @@ const AllSubscriptions = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_HOST}/api/subscription/all-subscriptions`);
-        setData(response.data.subscriptions); // Update Recoil state
+        setData(response.data.subscriptions);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -82,12 +82,32 @@ const AllSubscriptions = () => {
       cell: ({ row }) => {
         const subscriptionRow = row.original as Subscription;
         return (
-          <button 
-            onClick={() => deleteRow(subscriptionRow)}
-            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-          >
-            Delete
-          </button>
+            <div className="flex space-x-2">
+            <button 
+              onClick={() => {
+                if (subscriptionRow.status === SubscriptionStatus.RUNNING) {
+                  stopSubscription(subscriptionRow);
+                } else {
+                  startSubscription(subscriptionRow);
+                }
+              }}
+              className={`${
+              subscriptionRow.status === SubscriptionStatus.RUNNING 
+                ? 'bg-red-400 hover:bg-red-500' 
+                : 'bg-green-400 hover:bg-green-500'
+              } text-white rounded p-2`}>
+              {subscriptionRow.status === SubscriptionStatus.RUNNING ? (
+              <CircleStop className="h-5 w-5" />
+              ) : (
+              <Play className="h-5 w-5" />
+              )}
+            </button>
+            <button 
+              onClick={() => deleteRow(subscriptionRow)}
+              className="bg-red-400 text-white rounded hover:bg-red-500 p-2">
+              <Trash2 className="h-5 w-5" />
+            </button>
+            </div>
         );
       }
     })
@@ -102,21 +122,51 @@ const AllSubscriptions = () => {
     }
   };
 
-// Row action handler
-const deleteRow = async (rowData: Subscription) => {
-    console.log('Row action for:', rowData);
-    try {
-        const response = await axios.post(`${API_HOST}/api/subscription/delete-subscription`, { id: rowData.id });
+  const deleteRow = async (rowData: Subscription) => {
+      console.log('Row action for:', rowData);
+      try {
+          const response = await axios.post(`${API_HOST}/api/subscription/delete-subscription`, { id: rowData.id });
+          if (response && response.data.success) {
+              toast.success('Subscription deleted successfully!');
+              setCount(c => c + 1);
+          }
+      } catch (error) {
+          console.error('Error deleting subscription:', error);
+      }
+  };
+
+  const startSubscription = async (rowData: Subscription) => {
+    try {           
+        const response = await axios.post(`${API_HOST}/api/subscription/start-subscription`, { 
+            id: rowData.id
+        });
+        
         if (response && response.data.success) {
-            toast.success('Subscription deleted successfully!');
+            toast.success(`Subscription ${rowData.status === SubscriptionStatus.RUNNING ? 'stopped' : 'started'} successfully!`);
             setCount(c => c + 1);
         }
     } catch (error) {
-        console.error('Error deleting subscription:', error);
+        console.error('Error updating subscription status:', error);
+        toast.error('Failed to update subscription status');
     }
-};
+  };
 
-  // Create table instance
+  const stopSubscription = async (rowData: Subscription) => {
+    try {           
+        const response = await axios.post(`${API_HOST}/api/subscription/stop-subscription`, { 
+            id: rowData.id
+        });
+        
+        if (response && response.data.success) {
+            toast.success(`Subscription ${rowData.status === SubscriptionStatus.RUNNING ? 'stopped' : 'started'} successfully!`);
+            setCount(c => c + 1);
+        }
+    } catch (error) {
+        console.error('Error updating subscription status:', error);
+        toast.error('Failed to update subscription status');
+    }
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -141,12 +191,26 @@ const deleteRow = async (rowData: Subscription) => {
           <p><strong>Transaction Type:</strong> {row.transactionType}</p>
           <p><strong>Address:</strong> {row.address}</p>
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-end space-x-2">
+          <button 
+            onClick={() => toggleSubscriptionStatus(row)}
+            className={`${
+              row.status === SubscriptionStatus.RUNNING 
+                ? 'bg-red-400 hover:bg-red-500' 
+                : 'bg-green-400 hover:bg-green-500'
+              } text-white rounded p-2`}
+          >
+            {row.status === SubscriptionStatus.RUNNING ? (
+              <CircleStop className="h-5 w-5" />
+            ) : (
+              <Play className="h-5 w-5" />
+            )}
+          </button>
           <button 
             onClick={() => deleteRow(row)}
-            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            className="bg-red-400 text-white rounded hover:bg-red-500 p-2"
           >
-            Delete
+            <Trash2 className="h-5 w-5" />
           </button>
         </div>
       </div>

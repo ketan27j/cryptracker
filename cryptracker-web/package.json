@@ -15,7 +15,6 @@
     "axios": "^1.8.4",
     "jotai": "^2.12.2",
     "lucide-react": "^0.483.0",
-    "prisma-shared": "file:../prisma-shared",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",

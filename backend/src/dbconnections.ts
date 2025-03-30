@@ -35,11 +35,10 @@ export const connectAndCreateHeliusAlertTable = async (
     console.log('Connected to database');
     // Create HeliusAlert table
     const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS "HeliusAlert" (
+      CREATE TABLE IF NOT EXISTS "HeliusResponse" (
         "id" SERIAL PRIMARY KEY,
-        "name" VARCHAR(255) NOT NULL,
-        "source" VARCHAR(255) NOT NULL,
-        "receivedDateTime" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        "response" TEXT NOT NULL,
+        "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `;
     

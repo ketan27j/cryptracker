@@ -1,6 +1,6 @@
 import express from 'express';
 import { Address, Helius, TransactionType, WebhookType } from 'helius-sdk';
-import { prisma } from 'prisma-shared';
+import { prisma, SubscriptionStatus } from 'prisma-shared';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,6 +9,7 @@ const router = express.Router();
 const HELIUS_API_KEY: string = process.env.HELIUS_API_KEY || '';
 const webhookUrl: string = process.env.WEBHOOK_URL || '';
 const helius = new Helius(HELIUS_API_KEY)
+console.log('webhookUrl:', webhookUrl);
 
 router.post("/new-subscription", async (req, res) => {
     try {
@@ -69,30 +70,75 @@ router.post("/delete-subscription", async (req, res) => {
     }
 });
 
-router.get('/register-webhook', async (req, res) => {
+router.post('/start-subscription', async (req, res) => {
     try {
-
-        // Register webhook with Helius
-        const webhookResponse = await helius.createWebhook({
-            webhookURL: webhookUrl,
-            webhookType: WebhookType.ENHANCED_DEVNET,
-            transactionTypes: [TransactionType.TRANSFER],
-            accountAddresses: [Address.W_SOL_TOKEN], 
+        const { id } = req.body;
+        const subscription = await prisma.subscription.findUnique({
+            where: {
+                id: id
+            }
         });
-
-        if (webhookResponse && webhookResponse.webhookID) {
-            res.status(200).json({
-                success: true,
-                webhookId: webhookResponse.webhookID
+        if(subscription) {
+            const webhookResponse = await helius.createWebhook({
+                webhookURL: subscription.webhookUrl || webhookUrl,
+                webhookType: WebhookType.ENHANCED_DEVNET,
+                transactionTypes: [subscription.transactionType as TransactionType],
+                accountAddresses: [subscription.address as Address], 
             });
-        } else {
-            res.status(500).json({ error: 'Failed to create webhook' });
+            if (webhookResponse && webhookResponse.webhookID) {
+                const response = await prisma.subscription.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                        webhookId: webhookResponse.webhookID,
+                        status: SubscriptionStatus.RUNNING
+                    }
+                });
+                if(response) {
+                    res.status(200).json({
+                        success: true,
+                    });
+                }
+            }
         }
     } catch (error) {
         console.error('Error registering webhook:', error);
         res.status(500).json({ error: 'Failed to register webhook' });
     }
 });
+
+router.post('/stop-subscription', async (req, res) => {
+    try {
+        const { id } = req.body;
+        const subscription = await prisma.subscription.findUnique({
+            where: {
+                id: id
+            }
+        });
+        if(subscription && subscription.webhookId) {
+            const webhookResponse = await helius.deleteWebhook(subscription.webhookId);
+            if (webhookResponse) {
+                const response = await prisma.subscription.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                        status: SubscriptionStatus.STOPPED
+                    }
+                });
+                if(response) {
+                    res.status(200).json({
+                        success: true,
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error stopping subscription:', error);
+        res.status(500).json({ error: 'Failed to stop subscription' });
+    }
+}); 
 
 router.get('/get-webhook', async (req, res) => {
     try {

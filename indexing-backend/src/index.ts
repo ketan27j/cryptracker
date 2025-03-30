@@ -1,8 +1,6 @@
-import axios from "axios";
 import express from "express";
 import { PrismaClient } from 'prisma-shared';
 import dotenv from 'dotenv';
-import cron from 'node-cron';
 import cors from 'cors';
 
 dotenv.config();

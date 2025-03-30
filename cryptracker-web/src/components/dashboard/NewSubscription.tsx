@@ -10,7 +10,7 @@ import { subscriptionsAtom } from '../../atom/subscriptionsAtom';
 
 const NewSubscription = () => {
   const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:3004';
-  const [count, setCount] = useAtom(subscriptionsAtom); 
+  const [, setCount] = useAtom(subscriptionsAtom); 
   const [activeTab, setActiveTab] = useState('TOKEN');
   const [address, setAddress] = useState('');
   const [transactionType, setTransactionType] = useState('TRANSFER');
@@ -98,9 +98,7 @@ const NewSubscription = () => {
                           value={transactionType}
                           onChange={(e) => setTransactionType(e.target.value)}
                           className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
-                      <option>Transfer</option>
-                      <option>SMS</option>
-                      <option>Push Notification</option>
+                      <option>TRANSFER</option>
                     </select>
                   </div>
                   <button 

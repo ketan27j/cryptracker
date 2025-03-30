@@ -1,6 +1,4 @@
-import axios from 'axios';
 import express from 'express';
-import { Address,TransactionType,Helius, WebhookType } from 'helius-sdk';
 import dotenv from 'dotenv';
 import {PrismaClient} from 'prisma-shared';
 
@@ -11,7 +9,7 @@ const router = express.Router();
 router.post("/helius-webhook", async (req, res) => {
     try {
         const response = JSON.stringify(req.body, null, 2);
-    
+        console.log('webhook response:', response);
         if (!response) {
           return res.status(400).json({ error: 'Invalid webhook payload' });
         }
@@ -20,7 +18,7 @@ router.post("/helius-webhook", async (req, res) => {
               tokenAddress: "SOL",
               price: 1,
               response: response,
-              subscriptionId: 1,
+              subscriptionId: 14,
             },
           });
         
