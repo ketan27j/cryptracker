@@ -37,7 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in on mount
     const checkAuth = async () => {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('authToken');
       const userInfo = localStorage.getItem('user_info');
       
       if (token && userInfo) {
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser(JSON.parse(userInfo));
         } catch (error) {
           console.error('Auth check failed:', error);
-          localStorage.removeItem('auth_token');
+          localStorage.removeItem('authToken');
           localStorage.removeItem('user_info');
         }
       }
@@ -68,14 +68,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user_info');
     setUser(null);
     window.location.href = '/login';
   };
 
   const getAuthHeader = () => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('authToken');
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 

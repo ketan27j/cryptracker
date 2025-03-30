@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Database, LayoutDashboard, Settings, History, Menu, X } from 'lucide-react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Database, LayoutDashboard, Settings, History, Menu, X, LogOut } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    // Remove auth token from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user_info');
+    
+    // Redirect to login page
+    // navigate('/login');
+    window.location.href = '/login';
   };
 
   const renderSidebarLinks = () => (
@@ -61,6 +72,15 @@ const Layout: React.FC = () => {
         <Settings className="mr-4 h-6 w-6" />
         Settings
       </Link>
+      
+      {/* Logout Button */}
+      <button
+        onClick={handleLogout}
+        className="mt-8 w-full flex items-center px-2 py-2 text-base rounded-md text-red-600 hover:bg-red-50 transition-colors duration-200 group"
+      >
+        <LogOut className="mr-4 h-6 w-6" />
+        <span className="font-medium">Logout</span>
+      </button>
     </nav>
   );
 
@@ -85,6 +105,17 @@ const Layout: React.FC = () => {
                 </button>
               </div>
             </div>
+            
+            {/* Desktop Logout Button */}
+            {/* <div className="hidden md:flex items-center">
+              <button
+                onClick={handleLogout}
+                className="ml-4 px-4 py-2 rounded-md text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-sm transition-all duration-200 flex items-center space-x-2 transform hover:scale-105"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            </div> */}
           </div>
         </div>
       </nav>

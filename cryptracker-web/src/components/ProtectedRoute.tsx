@@ -1,29 +1,47 @@
+// import React from 'react';
+// import { Navigate } from 'react-router-dom';
+
+// interface ProtectedRouteProps {
+//   children?: React.ReactNode;
+// }
+
+// const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+//   const token = localStorage.getItem('authToken');
+//   console.log('ProtectedRoute - Token:', token);
+//   if (!token) {
+//     return <Navigate to="/login" replace />;
+//   }
+//   if(children) {
+//     return children;
+//   }
+//   else {
+//     <Navigate to="/login" replace />;
+//   }
+   
+  
+// };
+
+// export default ProtectedRoute;
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 // import { useAuth } from '../context/AuthContext';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  // const { isAuthenticated, isLoading } = useAuth();
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-  //     </div>
-  //   );
-  // }
+  // Check if auth_token exists in localStorage
   const token = localStorage.getItem('authToken');
-  console.log('ProtectedRoute - Token:', token);
+  
+  // If no token is found, redirect to login page
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-
-  return children;
   
+  // If children are provided, render them
+  // Otherwise render the Outlet for nested routes
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default ProtectedRoute;
