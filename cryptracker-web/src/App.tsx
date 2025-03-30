@@ -37,6 +37,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Layout from './components/Layout';
 import Settings from './components/dashboard/Settings';
+import Subscriptions from './components/dashboard/Subscriptions';
+import History from './components/dashboard/History';
 
 function App() {
   return (
@@ -59,6 +61,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/subscriptions" 
+            element={
+              <ProtectedRoute>
+                <Subscriptions />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/history" 
+            element={
+              <ProtectedRoute>
+                <History />
               </ProtectedRoute>
             } 
           />
