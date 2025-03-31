@@ -7,9 +7,7 @@ SolIndexer is a robust blockchain indexing platform that enables developers to s
 ![SolIndexer Architecture](https://github.com/ketan27j/cryptracker/blob/main/docs/architecture.png)
 
 ## Demo
-<video src="https://github.com/ketan27j/cryptracker/blob/main/docs/solindexer-demo.mp4" controls="controls" style="max-width: 730px;">
-</video>
-[![Video Description](https://github.com/ketan27j/cryptracker/blob/main/docs/play.jpg)](https://github.com/ketan27j/cryptracker/blob/main/docs/solindexer-demo.mp4)
+[![Video Description](https://github.com/ketan27j/cryptracker/blob/main/docs/play.jpg)](https://youtu.be/0kg__b4kwV8)
 
 ## Features
 
