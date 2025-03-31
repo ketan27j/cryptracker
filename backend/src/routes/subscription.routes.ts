@@ -11,14 +11,14 @@ const webhookUrl: string = process.env.WEBHOOK_URL || '';
 const helius = new Helius(HELIUS_API_KEY)
 console.log('webhookUrl:', webhookUrl);
 
-router.post("/new-subscription", async (req, res) => {
+router.post("/new-subscription", async (req: any, res: any) => {
     try {
         const { address, transactionType, addressType } = req.body;
         console.log('address:', address);
         console.log('transactionType:', transactionType);
         const response = await prisma.subscription.create({
             data: {
-                userId : 1,
+                userId : req.user.id,
                 webhookUrl: webhookUrl,
                 address: address,
                 transactionType: transactionType,
@@ -36,9 +36,15 @@ router.post("/new-subscription", async (req, res) => {
     }
 });
 
-router.get("/all-subscriptions", async (req, res) => {
+router.get("/all-subscriptions", async (req:any, res:any) => {
     try {
-        const subscriptions = await prisma.subscription.findMany();
+        const subscriptions = await prisma.subscription.findMany(
+            {
+                where: {
+                    userId: req.user.id
+                }
+            }
+        );
         if(subscriptions) {
             res.status(200).json({
                 success: true,
@@ -51,12 +57,13 @@ router.get("/all-subscriptions", async (req, res) => {
     }
 });
 
-router.post("/delete-subscription", async (req, res) => {
+router.post("/delete-subscription", async (req:any, res:any) => {
     try {
         const { id } = req.body;
         const response = await prisma.subscription.delete({
             where: {
-                id: id
+                id: id,
+                userId: req.user.id 
             }
         });
         if(response) {
@@ -70,7 +77,7 @@ router.post("/delete-subscription", async (req, res) => {
     }
 });
 
-router.post('/start-subscription', async (req, res) => {
+router.post('/start-subscription', async (req: any, res: any) => {
     try {
         const { id } = req.body;
         const subscription = await prisma.subscription.findUnique({
@@ -80,6 +87,7 @@ router.post('/start-subscription', async (req, res) => {
         });
         if(subscription) {
             const webhookResponse = await helius.createWebhook({
+                authHeader: req.user.id,
                 webhookURL: subscription.webhookUrl || webhookUrl,
                 webhookType: WebhookType.ENHANCED_DEVNET,
                 transactionTypes: [subscription.transactionType as TransactionType],
@@ -92,7 +100,8 @@ router.post('/start-subscription', async (req, res) => {
                     },
                     data: {
                         webhookId: webhookResponse.webhookID,
-                        status: SubscriptionStatus.RUNNING
+                        status: SubscriptionStatus.RUNNING,
+                        updatedAt: new Date()
                     }
                 });
                 if(response) {
@@ -124,6 +133,7 @@ router.post('/stop-subscription', async (req, res) => {
                         id: id
                     },
                     data: {
+                        webhookId: null,
                         status: SubscriptionStatus.STOPPED
                     }
                 });
