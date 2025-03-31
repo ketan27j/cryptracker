@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-import { apiPost } from '../../utils/api';
+import { apiGet, apiPost } from '../../utils/api';
 
 const Settings: React.FC = () => {
   const [dbCredentials, setDbCredentials] = useState({
@@ -12,42 +11,56 @@ const Settings: React.FC = () => {
     username: '',
     password: '',
   });
-  const apiHost = 'http://localhost:3004';
   
   const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch database details on first page load
+  useEffect(() => {
+    const fetchDbDetails = async () => {
+      try {
+        const response = await apiGet('api/user/get-database');
+        if (response.success && response.data) {
+          setDbCredentials({
+            host: response.data.host || '',
+            port: response.data.port || 5432,
+            database: response.data.databaseName || '',
+            username: response.data.userName || '',
+            password: '', // blank password for security reasons
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching database details:', error);
+        toast.error('Failed to fetch database details.');
+      }
+    };
+
+    fetchDbDetails();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      // Prepare connection details object
       const connectionDetails = {
         host: dbCredentials.host,
         port: dbCredentials.port,
         databaseName: dbCredentials.database,
         userName: dbCredentials.username,
-        password: dbCredentials.password
+        password: dbCredentials.password,
       };
       
-      // Make POST request to the API
-      // const response = await axios.post(apiHost + '/api/user/connect-database', connectionDetails);
       const response = await apiPost('api/user/connect-database', connectionDetails);
       console.log('Response:', response);
       if (response.success) {
         toast.success('Database connected successfully!');
       } else {
         toast.error(response.message || 'Failed to connect to database');
+        toast.error(response.message || 'Failed to connect to database');
       }
     } catch (error) {
       console.error('Error connecting to database:', error);
-      let errorMessage = 'Failed to connect to database';
-      
-      // if (axios.isAxiosError(error) && error.response) {
-      //   errorMessage = error.response.data.message || errorMessage;
-      // }
-      
-      toast.error(errorMessage);
+      toast.error('Failed to connect to database');
     } finally {
       setIsLoading(false);
     }

@@ -45,7 +45,7 @@ export const connectAndCreateHeliusAlertTable = async (
     
     await client.query(createTableQuery);
     
-    console.log('Successfully connected to database and created HeliusAlert table');
+    console.log('Successfully connected to database with HeliusResponse table');
     client.release();
     await pool.end();
     
@@ -87,14 +87,24 @@ export const storeUserDatabaseConnection = async (
   try {
     console.log('Connected to cryptracker database');
 
-    const response = await prisma.userPostgresDatabase.create({
-      data: {
+    const response = await prisma.userPostgresDatabase.upsert({
+      where: {
+        id: 1
+      },
+      create: {
         host,
         port,
         databaseName: dbName,
         userName,
         password,
         userId: 1
+      },
+      update: {
+        host,
+        port,
+        databaseName: dbName,
+        userName,
+        password
       }
     });
     

@@ -1,5 +1,6 @@
 import express from 'express';
 import { connectAndCreateHeliusAlertTable, storeUserDatabaseConnection } from '../dbconnections';
+import { prisma } from 'prisma-shared';
 
 const router = express.Router();
 
@@ -16,6 +17,34 @@ router.get("/status", async (req, res) => {
         });
     }
 });
+
+router.get("/get-database", async (req:any , res:any) => {
+    try {
+        const userDatabase = await prisma.userPostgresDatabase.findFirst({
+            where: {
+                userId: req.user.id   
+            } 
+        });
+        if (userDatabase) {
+            res.status(200).json({
+                success: true,
+                data: userDatabase
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "User database connection details not found"
+            });
+        }
+    } catch (error) {
+        console.error("Error in get-database route:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error instanceof Error ? error.message : String(error)
+        });
+    }
+});  
 
 router.post("/connect-database", async (req: any, res: any) => {
     try {

@@ -29,7 +29,7 @@ router.post("/helius-webhook", async (req, res) => {
           });
           const client = await pool.connect();
           const query = `INSERT INTO HeliusResponse (response) VALUES ('${response}')`;
-          
+          await client.query(query);
           res.status(200).json({ success: true });
         }
     } catch (error) {
