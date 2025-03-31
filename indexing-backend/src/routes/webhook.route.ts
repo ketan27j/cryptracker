@@ -32,12 +32,15 @@ router.post("/helius-webhook", async (req, res) => {
             database: userDb.databaseName,
             user: userDb.userName,
             password: userDb.password,
+            ssl: {
+                rejectUnauthorized: false,
+            },
         });
 
         const client = await pool.connect();
 
         try {
-            const query = `INSERT INTO HeliusResponse (response) VALUES ($1)`;
+            const query = `INSERT INTO "HeliusResponse" (response) VALUES ($1)`;
             await client.query(query, [response]);
             res.status(200).json({ success: true });
         } finally {

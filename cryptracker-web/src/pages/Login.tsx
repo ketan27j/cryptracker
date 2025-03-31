@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Lock, Database, Shield, Zap } from 'lucide-react';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { Database, Shield, Zap } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const apiHost = 'http://localhost:3004';
 
   useEffect(() => {
     // Check if user is already logged in

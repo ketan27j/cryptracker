@@ -34,6 +34,7 @@ sudo docker run --name cryptracker cryptracker
 # build image using custom docker file for solevents
 sudo docker build -t cryptracker-events -f eventDockerfile .
 
+sudo docker run --name cryptracker-events cryptracker-events
 
 # add existing main domaina certificate to new subdomain
 sudo certbot --expand -d cryptoconsulting.tech,solindexer.cryptoconsulting.tech,solevents.cryptoconsulting.tech

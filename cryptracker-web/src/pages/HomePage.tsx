@@ -12,11 +12,6 @@ export default function HomePage() {
     if (isSignupOpen) setIsSignupOpen(false);
   };
 
-  const toggleSignup = () => {
-    setIsSignupOpen(!isSignupOpen);
-    if (isLoginOpen) setIsLoginOpen(false);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white text-gray-900">
       {/* Navigation */}
