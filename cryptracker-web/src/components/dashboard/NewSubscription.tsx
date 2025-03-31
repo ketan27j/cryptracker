@@ -61,9 +61,9 @@ const NewSubscription = () => {
                           value={transactionType}
                           onChange={(e) => setTransactionType(e.target.value)}
                           className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
-                      <option>TRASNSER</option>
-                      <option>Buy</option>
-                      <option>Sell</option>
+                      <option>NFT_BID</option>
+                      <option>NFT_MINT</option>
+                      <option>BURN_NFT</option>
                     </select>
                   </div>
                   <button 
@@ -98,6 +98,8 @@ const NewSubscription = () => {
                           onChange={(e) => setTransactionType(e.target.value)}
                           className="w-25 border border-blue-200 rounded-lg py-2 px-3 text-gray-700 focus:ring-2 focus:ring-blue-300">
                       <option>TRANSFER</option>
+                      <option>STAKE_SOL</option>
+                      <option>UNSTAKE_SOL</option>
                     </select>
                   </div>
                   <button 
