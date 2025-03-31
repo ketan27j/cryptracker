@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Lock, TrendingUp, Shield, Zap } from 'lucide-react';
+import { Lock, Database, Shield, Zap } from 'lucide-react';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -60,19 +61,19 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50">
+    <div className="min-h-0 flex items-center justify-center bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50">
       <ToastContainer position="top-right" autoClose={5000} />
       
       <div className="max-w-md w-full p-10 bg-white rounded-2xl shadow-xl transform transition-all">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="h-16 w-16 bg-indigo-600 rounded-full flex items-center justify-center">
-              <TrendingUp className="h-8 w-8 text-white" />
-            </div>
+            <div className="flex-shrink-0">
+                <Link to="/" className="flex items-center px-2 py-2">
+                  <Database className="h-8 w-8 text-indigo-600" />
+                  <span className="ml-1 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-transparent">Sol Indexer</span>
+                </Link>
+              </div>
           </div>
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">
-            CrypTracker
-          </h2>
           <p className="mt-3 text-gray-600 font-medium">
             Your ultimate blockchain monitoring platform
           </p>
@@ -93,12 +94,6 @@ const Login: React.FC = () => {
           
           {/* Login section */}
           <div className="flex flex-col items-center space-y-6">
-            <div className="w-full flex justify-center">
-              <div className="flex items-center justify-center space-x-2 py-2 px-4 bg-indigo-50 rounded-full">
-                <Lock className="h-5 w-5 text-indigo-600" />
-                <span className="text-indigo-700 font-medium">Secure Authentication</span>
-              </div>
-            </div>
             
             <div className="w-full flex justify-center">
               {isLoading ? (
