@@ -16,7 +16,7 @@ export const connectAndCreateHeliusAlertTable = async (
   databaseName: string,
   userName: string,
   password: string
-): Promise<boolean> => {
+): Promise<number> => {
     console.log('Creating pool...');
   const pool = new Pool({
     host,
@@ -42,19 +42,23 @@ export const connectAndCreateHeliusAlertTable = async (
         "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `;
-    
-    await client.query(createTableQuery);
-    
+    let count;
+    try{
+      await client.query(createTableQuery);
+      count = await client.query('SELECT COUNT(*) FROM "HeliusResponse"');
+    } finally {
+      client.release();
+    }
     console.log('Successfully connected to database with HeliusResponse table');
-    client.release();
+    
     await pool.end();
     
-    return true;
+    return parseInt(count.rows[0].count, 10);
   } catch (error) {
     console.error('Error connecting to database or creating HeliusAlert table:', error);
     await pool.end();
     
-    return false;
+    return -1;
   }
 };
 

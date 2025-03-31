@@ -10,6 +10,15 @@ const router = express.Router();
 router.post("/helius-webhook", async (req, res) => {
     try {
         const response = JSON.stringify(req.body, null, 2);
+        const authHeader = req.headers.authorization;
+        if(!authHeader){
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        let userId = 0;
+        if(authHeader.startsWith('Bearer ')){
+            userId = Number(authHeader.substring(7));
+            console.log('userId:', userId);
+        }
         console.log('webhook response:', response);
 
         if (!response) {
@@ -18,7 +27,7 @@ router.post("/helius-webhook", async (req, res) => {
 
         const userDb = await prisma.userPostgresDatabase.findFirst({
             where: {
-                userId: 3,
+                userId: userId,
             },
         });
 

@@ -70,7 +70,7 @@ router.post("/connect-database", async (req: any, res: any) => {
             password
         );
         
-        if (isConnected) {
+        if (isConnected >= 0) {
             const savedConnectionInfo = await storeUserDatabaseConnection(
                 host,
                 portNumber,
@@ -114,21 +114,23 @@ router.get("/test-database", async (req: any, res: any) => {
             }
         }); 
         if(userDatabase) {
-            const isConnected = await connectAndCreateHeliusAlertTable(
+            const count = await connectAndCreateHeliusAlertTable(
                 userDatabase.host,
                 userDatabase.port,
                 userDatabase.databaseName,
                 userDatabase.userName,
                 userDatabase.password
             );
-            if(isConnected) {
+            if(count >= 0) {
                 res.status(200).json({
                     success: true,
+                    count: count,
                     message: "Successfully connected to database with HeliusResponse table"
                 });
             } else {
                 res.status(500).json({
                     success: false,
+                    count: -1,
                     message: "Failed to connect to database with HeliusResponse table"
                 });
             }

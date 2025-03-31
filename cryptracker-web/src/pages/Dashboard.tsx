@@ -4,6 +4,7 @@ import { apiGet } from '../utils/api';
 const Dashboard: React.FC = () => {
   const [activeSubscriptions, setActiveSubscriptions] = useState(0);
   const [dbStatus, setDbStatus] = useState<'Connected' | 'Not Connected'>('Not Connected');
+  const [indexCount, setindexCount] = useState(0);
 
   // Fetch active subscriptions count
   useEffect(() => {
@@ -31,6 +32,7 @@ const Dashboard: React.FC = () => {
         } else {
           setDbStatus('Not Connected');
         }
+        setindexCount(response.count);
       } catch (error) {
         console.error('Error checking database connection:', error);
         setDbStatus('Not Connected');
@@ -53,7 +55,7 @@ const Dashboard: React.FC = () => {
 
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold mb-4">Data Points</h2>
-          <div className="text-3xl font-bold text-green-600">0</div>
+          <div className="text-3xl font-bold text-green-600">{indexCount}</div>
           <p className="text-gray-500 mt-2">Total indexed items</p>
         </div>
 
