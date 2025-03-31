@@ -1,6 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { apiGet } from '../utils/api';
 
 const Dashboard: React.FC = () => {
+  const [activeSubscriptions, setActiveSubscriptions] = useState(0);
+
+  // Fetch active subscriptions count
+  useEffect(() => {
+    const fetchActiveSubscriptions = async () => {
+      try {
+        const response = await apiGet('api/subscription/active-subscriptions');
+        if (response.success) {
+          setActiveSubscriptions(response.subscriptionCount);
+        }
+      } catch (error) {
+        console.error('Error fetching active subscriptions:', error);
+      }
+    };
+
+    fetchActiveSubscriptions();
+  }, []);
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Welcome to Solana Indexer</h1>
@@ -8,7 +27,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold mb-4">Active Subscriptions</h2>
-          <div className="text-3xl font-bold text-indigo-600">0</div>
+          <div className="text-3xl font-bold text-indigo-600">{activeSubscriptions}</div>
           <p className="text-gray-500 mt-2">Currently running indexers</p>
         </div>
 

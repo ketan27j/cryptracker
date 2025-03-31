@@ -57,6 +57,28 @@ router.get("/all-subscriptions", async (req:any, res:any) => {
     }
 });
 
+router.get("/active-subscriptions", async (req:any, res:any) => {
+    try {
+        const subscriptionCount = await prisma.subscription.count(
+            {
+                where: {
+                    userId: req.user.id,
+                    status: SubscriptionStatus.RUNNING
+                }
+            }
+        );
+        if(subscriptionCount) {
+            res.status(200).json({
+                success: true,
+                subscriptionCount: subscriptionCount
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching subscriptions:', error);
+        res.status(500).json({ error: 'Failed to fetch subscriptions' });
+    }
+});
+
 router.post("/delete-subscription", async (req:any, res:any) => {
     try {
         const { id } = req.body;
@@ -87,7 +109,7 @@ router.post('/start-subscription', async (req: any, res: any) => {
         });
         if(subscription) {
             const webhookResponse = await helius.createWebhook({
-                authHeader: req.user.id,
+                authHeader: req.user.id.toString(),
                 webhookURL: subscription.webhookUrl || webhookUrl,
                 webhookType: WebhookType.ENHANCED_DEVNET,
                 transactionTypes: [subscription.transactionType as TransactionType],
