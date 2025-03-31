@@ -33,11 +33,11 @@ const Settings: React.FC = () => {
       // Make POST request to the API
       // const response = await axios.post(apiHost + '/api/user/connect-database', connectionDetails);
       const response = await apiPost('api/user/connect-database', connectionDetails);
-      console.log('Response:', response.data);
-      if (response.data.success) {
+      console.log('Response:', response);
+      if (response.success) {
         toast.success('Database connected successfully!');
       } else {
-        toast.error(response.data.message || 'Failed to connect to database');
+        toast.error(response.message || 'Failed to connect to database');
       }
     } catch (error) {
       console.error('Error connecting to database:', error);
