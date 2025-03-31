@@ -142,12 +142,12 @@ export const authenticateJWT = async (
     const token = authHeader.split(' ')[1];
 
     // Verify the JWT token
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string; name: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; email: string; name: string };
 
     // Find the user in the database
     const user = await prisma.user.findUnique({
-      // where: { id: decoded.userId },
-      where: { googleId: decoded.userId },
+      where: { id: decoded.userId },
+      // where: { googleId: decoded.userId },
     });
 
     if (!user) {
