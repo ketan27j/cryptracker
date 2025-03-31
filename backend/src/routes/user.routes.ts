@@ -106,7 +106,7 @@ router.post("/connect-database", async (req: any, res: any) => {
     }
 });
 
-router.get("test-database", async (req: any, res: any) => {
+router.get("/test-database", async (req: any, res: any) => {
     try {
         const userDatabase = await prisma.userPostgresDatabase.findFirst({
             where: {
