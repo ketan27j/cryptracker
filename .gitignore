@@ -7,6 +7,7 @@
 /cryptracker-web/node_modules
 /packages/*/node_modules
 /backend/dist
+/backend/client
 /indexing-backend/dist
 /prisma-client/dist
 /cryptracker-web/dist

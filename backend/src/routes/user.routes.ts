@@ -106,4 +106,41 @@ router.post("/connect-database", async (req: any, res: any) => {
     }
 });
 
+router.get("test-database", async (req: any, res: any) => {
+    try {
+        const userDatabase = await prisma.userPostgresDatabase.findFirst({
+            where: {
+                userId: req.user.id
+            }
+        }); 
+        if(userDatabase) {
+            const isConnected = await connectAndCreateHeliusAlertTable(
+                userDatabase.host,
+                userDatabase.port,
+                userDatabase.databaseName,
+                userDatabase.userName,
+                userDatabase.password
+            );
+            if(isConnected) {
+                res.status(200).json({
+                    success: true,
+                    message: "Successfully connected to database with HeliusResponse table"
+                });
+            } else {
+                res.status(500).json({
+                    success: false,
+                    message: "Failed to connect to database with HeliusResponse table"
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error in test-database route:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error instanceof Error ? error.message : String(error)
+        });
+    }
+});
+
 export default router;

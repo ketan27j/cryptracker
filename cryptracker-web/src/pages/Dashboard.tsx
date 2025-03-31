@@ -3,6 +3,7 @@ import { apiGet } from '../utils/api';
 
 const Dashboard: React.FC = () => {
   const [activeSubscriptions, setActiveSubscriptions] = useState(0);
+  const [dbStatus, setDbStatus] = useState<'Connected' | 'Not Connected'>('Not Connected');
 
   // Fetch active subscriptions count
   useEffect(() => {
@@ -18,6 +19,25 @@ const Dashboard: React.FC = () => {
     };
 
     fetchActiveSubscriptions();
+  }, []);
+
+  // Check database connection status
+  useEffect(() => {
+    const checkDatabaseConnection = async () => {
+      try {
+        const response = await apiGet('api/user/test-database');
+        if (response.success) {
+          setDbStatus('Connected');
+        } else {
+          setDbStatus('Not Connected');
+        }
+      } catch (error) {
+        console.error('Error checking database connection:', error);
+        setDbStatus('Not Connected');
+      }
+    };
+
+    checkDatabaseConnection();
   }, []);
 
   return (
@@ -41,7 +61,9 @@ const Dashboard: React.FC = () => {
           <h2 className="text-lg font-semibold mb-4">Database Status</h2>
           <div className="text-sm text-gray-600">
             <p>Configure your database in settings</p>
-            <p className="text-yellow-600 font-semibold mt-2">Not Connected</p>
+            <p className={`font-semibold mt-2 ${dbStatus === 'Connected' ? 'text-green-600' : 'text-yellow-600'}`}>
+              {dbStatus}
+            </p>
           </div>
         </div>
       </div>
