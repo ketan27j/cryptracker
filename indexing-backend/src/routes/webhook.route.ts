@@ -19,7 +19,6 @@ router.post("/helius-webhook", async (req, res) => {
             userId = Number(authHeader);
             console.log('userId:', userId);
         }
-        console.log('userId:', userId);
 
         if (!response) {
             return res.status(400).json({ error: 'Invalid webhook payload' });
