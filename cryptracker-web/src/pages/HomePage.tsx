@@ -182,7 +182,11 @@ export default function HomePage() {
             Index Solana blockchain data directly into your Postgres database without managing your own infrastructure.
           </p>
           <div className="mt-10 flex justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors flex items-center">
+            <button
+            onClick={() => {
+                window.location.href = '/login';
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors flex items-center">
               Get Started <ArrowRight className="ml-2" size={20} />
             </button>
           </div>
@@ -381,14 +385,16 @@ export default function HomePage() {
             <p className="mt-4 text-xl text-white opacity-90">
               Join developers who are building the next generation of blockchain applications.
             </p>
-            <div className="mt-8 flex justify-center gap-4">
-              <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-md text-base font-medium transition-colors">
-                Sign Up for Free
-              </button>
-              <button className="bg-transparent border border-white text-white hover:bg-white hover:bg-opacity-10 px-6 py-3 rounded-md text-base font-medium transition-colors">
-                View Documentation
-              </button>
-            </div>
+            
+          <div className="mt-10 flex justify-center">
+            <button
+            onClick={() => {
+                window.location.href = '/login';
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors flex items-center">
+              Get Started <ArrowRight className="ml-2" size={20} />
+            </button>
+          </div>
           </div>
         </div>
       </div>

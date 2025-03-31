@@ -38,7 +38,7 @@ const Layout: React.FC = () => {
       </Link>
 
       <Link
-        to="/subscriptions"
+        to="/dashboard/subscriptions"
         className={`mt-1 group flex items-center px-2 py-2 text-base rounded-md ${
           isActive('/subscriptions')
             ? 'bg-indigo-100 text-indigo-600'
@@ -50,7 +50,7 @@ const Layout: React.FC = () => {
       </Link>
 
       <Link
-        to="/history"
+        to="/dashboard/history"
         className={`mt-1 group flex items-center px-2 py-2 text-base rounded-md ${
           isActive('/history')
             ? 'bg-indigo-100 text-indigo-600'
@@ -62,7 +62,7 @@ const Layout: React.FC = () => {
       </Link>
 
       <Link
-        to="/settings"
+        to="/dashboard/settings"
         className={`mt-1 group flex items-center px-2 py-2 text-base rounded-md ${
           isActive('/settings')
             ? 'bg-indigo-100 text-indigo-600'
