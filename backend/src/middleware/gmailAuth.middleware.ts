@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from 'prisma-shared';
 
 const prisma = new PrismaClient();
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '935241688123-bl4lfpm43k7hguhg8aht2p5c753nihiu.apps.googleusercontent.com';
-const JWT_SECRET = process.env.JWT_SECRET || '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';
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const JWT_SECRET = process.env.JWT_SECRET || '';
 
 // Create a new OAuth client
 const client = new OAuth2Client(CLIENT_ID);
