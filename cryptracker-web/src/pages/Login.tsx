@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       setIsLoading(true);
       console.log(credentialResponse);
       
-      const response = await fetch(`/api/auth/google`, {
+      const response = await fetch(`http://localhost:3004/api/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

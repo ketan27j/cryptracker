@@ -2,9 +2,13 @@ import express, { Request, Response, NextFunction, Router } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from 'prisma-shared';
+import dotenv from 'dotenv';
+
+delete require.cache[require.resolve('dotenv')];
+dotenv.config();
 
 const prisma = new PrismaClient();
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID || '';
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
 // Create a new OAuth client
@@ -31,9 +35,9 @@ interface AuthenticatedRequest extends Request {
 const router = express.Router();
 export const googleAuthHandler = async (req: Request, res: Response) => {
   try {
-    console.log('Received Google Auth request');
+    console.log('Received Google Auth request', CLIENT_ID);
     const { idToken } = req.body;
-
+    console.log(`idToken: ${idToken}`);
     if (!idToken) {
       // return res.status(400).json({ error: 'ID token is required' });
       res.status(400).json({ error: 'ID token is required' });
@@ -44,7 +48,7 @@ export const googleAuthHandler = async (req: Request, res: Response) => {
       idToken,
       audience: CLIENT_ID,
     });
-
+    console.log('ticket:', ticket);
     const payload = ticket.getPayload();
     
     if (!payload) {
@@ -52,7 +56,7 @@ export const googleAuthHandler = async (req: Request, res: Response) => {
       res.status(401).json({ error: 'Invalid token payload' });
       return;
     }
-
+    console.log('payload:', payload);
     const { sub: googleId, email, name, picture } = payload;
     console.log(`sub: ${googleId}, email: ${email}, name: ${name}, picture: ${picture}`);
     if (!googleId || !email) {
@@ -65,7 +69,7 @@ export const googleAuthHandler = async (req: Request, res: Response) => {
     let user = await prisma.user.findFirst({
       where: { googleId: googleId },
     });
-
+    console.log('user:', user);
     if (!user) {
       // Create new user if not exists
       user = await prisma.user.create({

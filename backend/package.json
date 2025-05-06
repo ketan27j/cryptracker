@@ -26,7 +26,7 @@
     "jsonwebtoken": "^9.0.2",
     "helius-sdk": "^1.4.2",
     "pg": "^8.14.1",
-    "prisma-shared": "file:prisma-shared"
+    "prisma-shared": "file:../prisma-shared"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",

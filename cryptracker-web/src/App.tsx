@@ -26,7 +26,7 @@
 // export default App;
 
 
-// import React from 'react';
+import React from 'react';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,8 +42,13 @@ import History from './components/dashboard/History';
 import HomePage from './pages/HomePage';
 
 function App() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  if (!clientId) {
+    console.error('Google Client ID is not set in environment variables');
+  }
+  console.log('clientId', clientId);
   return (
-    <GoogleOAuthProvider clientId="935241688123-bl4lfpm43k7hguhg8aht2p5c753nihiu.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
       <Router>
         <ToastContainer position="top-right" autoClose={5000} />
         <Routes>
